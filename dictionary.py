@@ -1,44 +1,46 @@
 _contact_book = {}
 
+def if_exist(f):
+    """
+    decoractor - check if name exist
+
+    @raise if not exist
+    """
+    def wrapper(name):
+        if name not in _contact_book:
+            raise KeyError("Contact not exist")
+        return f(name)
+    return wrapper
+
+def if_not_exist(f):
+    """
+    decoractor - check if name exist
+
+    @raise if not exist
+    """
+    def wrapper(name, phone):
+        if name in _contact_book:
+            raise KeyError("Contact already exist")
+        return f(name, phone)
+    return wrapper
+            
+@if_not_exist
 def add(name, phone):
     """
     add contact to dictionary
     add(name, phone)
-
-    @raise if contact already exist
     """
-    if not exist(name):
-        _contact_book[name] = phone
-    else:
-        raise KeyError("Contact already exist")
+    _contact_book[name] = phone
 
-def exist(name):
-    """
-    check if contact exist with such name
-    """
-    return name in _contact_book
-
+@if_exist
 def get(name):
-    """
-    get contact phone
+    """ get contact phone """
+    return _contact_book[name]
 
-    @raise if contact not exist
-    """
-    if exist(name):
-        return _contact_book[name]
-    else:
-        raise KeyError("Contact not exist")
-
+@if_exist
 def update(name, phone):
-    """
-    update(name, phone)
-
-    @raise if not exist
-    """
-    if exist(name):
-        _contact_book.update({name: phone})
-    else:
-        raise KeyError("Contact not exist")
+    """ update(name, phone) """
+    _contact_book.update({name: phone})
 
 def list():
     """
@@ -47,14 +49,8 @@ def list():
     """
     return _contact_book.copy()
 
+@if_exist
 def delete(name):
-    """
-    delete(name)
-
-    @raise if contact not exist
-    """
-    if exist(name):
-        _contact_book.pop(name)
-    else:
-        raise KeyError("Contact not exist")
+    """ delete(name) """
+    _contact_book.pop(name)
 
